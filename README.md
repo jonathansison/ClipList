@@ -11,5 +11,5 @@ A lightweight Windows desktop checklist and screenshot notepad built with Electr
 
 ## Download (Windows)
 Go to the **[Releases](https://github.com/jonathansison/notelist-app/releases)** page and download:
-- **`NoteList 1.0.0.exe`** (runs right away, no install needed)[cite: 1]
-- **`NoteList Setup 1.0.0.exe`** (standard Windows installer)[cite: 1]
+- **`NoteList 1.0.0.exe`** (runs right away, no install needed)
+- **`NoteList Setup 1.0.0.exe`** (standard Windows installer)
