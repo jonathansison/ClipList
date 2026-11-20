@@ -1,5 +1,5 @@
 {
-  "name": "NoteList-App",
+  "name": "ClipList",
   "version": "1.0.0",
   "description": "Checklist and screenshot notepad desktop app",
   "main": "main.js",
@@ -9,7 +9,7 @@
   },
   "build": {
     "appId": "com.notelist.app",
-    "productName": "NoteList",
+    "productName": "ClipList",
     "win": {
       "target": [
         "nsis",
