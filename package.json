@@ -1,0 +1,24 @@
+{
+  "name": "NoteList-App",
+  "version": "1.0.0",
+  "description": "Checklist and screenshot notepad desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.notelist.app",
+    "productName": "NoteList",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^25.0.0"
+  }
+}

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notelist</title>
+<style>
+    :root {
+      --bg-app: #f4f4f4;
+      --bg-surface: #ffffff;
+      --bg-subtle: #fafafa;
+      --bg-dimmed: #eaeaea;
+      --text-main: #222222;
+      --text-muted: #666666;
+      --border-color: #222222;
+      --btn-primary-bg: #222222;
+      --btn-primary-text: #ffffff;
+      --btn-primary-hover: #444444;
+      --danger-color: #cc3333;
+      --danger-hover-text: #ffffff;
+    }
+
+    body.dark-mode {
+      --bg-app: #141416;
+      --bg-surface: #1e1e22;
+      --bg-subtle: #26262b;
+      --bg-dimmed: #19191d;
+      --text-main: #ededef;
+      --text-muted: #9a9aa3;
+      --border-color: #45454f;
+      --btn-primary-bg: #ededef;
+      --btn-primary-text: #141416;
+      --btn-primary-hover: #d0d0d5;
+      --danger-color: #e05252;
+      --danger-hover-text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Top Header matching your wireframe */
+    /* Top Header matching your wireframe */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      background-color: var(--bg-surface);
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-icon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background-color: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      user-select: none;
+    }
+
+    .app-icon-badge svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    select:hover, button:hover {
+      background: var(--bg-subtle);
+    }
+
+    button.icon-btn {
+      width: 34px;
+      height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button.icon-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    button.primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      font-weight: 500;
+      border-color: var(--btn-primary-bg);
+    }
+
+    button.primary:hover {
+      background: var(--btn-primary-hover);
+      border-color: var(--btn-primary-hover);
+    }
+
+    .top-bar h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    select, button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    select:hover, button:hover {
+      background: var(--bg-subtle);
+    }
+
+    button.primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      font-weight: 500;
+      border-color: var(--btn-primary-bg);
+    }
+
+    button.primary:hover {
+      background: var(--btn-primary-hover);
+      border-color: var(--btn-primary-hover);
+    }
+
+    /* Scrollable List Area */
+    #list-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Individual Row Box (Wireframe Layout) */
+    .note-row {
+      display: flex;
+      align-items: stretch;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      min-height: 70px;
+      transition: opacity 0.2s ease, background-color 0.2s ease;
+    }
+
+    /* Dimmed state when checkbox is ticked */
+    .note-row.dimmed {
+      opacity: 0.45;
+      background-color: var(--bg-dimmed);
+    }
+
+    /* Left Narrow Prefix Column */
+    .prefix-col {
+      width: 42px;
+      border-right: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 15px;
+      user-select: none;
+      background-color: var(--bg-subtle);
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    /* Middle Content Area */
+    .content-col {
+      flex: 1;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .note-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 14px;
+      line-height: 1.4;
+      background: transparent;
+      color: var(--text-main);
+      min-height: 44px;
+    }
+
+    .note-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Right Action Controls (Checkbox + Delete) */
+    .action-col {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+    }
+
+    .note-checkbox {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      accent-color: var(--btn-primary-bg);
+    }
+
+    .delete-btn {
+      border: 1.5px solid var(--danger-color);
+      color: var(--danger-color);
+      background: transparent;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    .delete-btn:hover {
+      background: var(--danger-color);
+      color: var(--danger-hover-text);
+    }
+
+    /* Attached Screenshot Thumbnails inside a Box */
+    .attachments-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .thumb-wrapper {
+      position: relative;
+      display: inline-flex;
+      border: 1.5px solid var(--border-color);
+      border-radius: 5px;
+      overflow: hidden;
+      background: var(--bg-subtle);
+    }
+
+    .thumb-img {
+      height: 64px;
+      width: auto;
+      max-width: 140px;
+      object-fit: cover;
+      display: block;
+      cursor: zoom-in;
+    }
+
+    .remove-img-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      border: none;
+      border-radius: 3px;
+      background: rgba(20, 20, 22, 0.78);
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .remove-img-btn:hover {
+      background: var(--danger-color);
+    }
+
+    /* Fullscreen / Expanded Image Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 92vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modal-img {
+      max-width: 100%;
+      max-height: 85vh;
+      border: 2px solid #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-close-btn {
+      margin-top: 10px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    /* Notepad-Style Tab Bar */
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px 0;
+      background-color: var(--bg-subtle);
+      border-bottom: 2px solid var(--border-color);
+      overflow-x: auto;
+      user-select: none;
+    }
+
+    .tab-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      background-color: var(--bg-app);
+      color: var(--text-muted);
+      border: 1.5px solid var(--border-color);
+      border-bottom: none;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      top: 2px;
+    }
+
+    .tab-item.active {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      font-weight: 600;
+      padding-bottom: 9px;
+    }
+
+    .tab-title {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab-rename-input {
+      width: 120px;
+      font-size: 12px;
+      padding: 1px 4px;
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .tab-close-btn {
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0 2px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .tab-close-btn:hover {
+      background: var(--danger-color);
+      color: var(--danger-hover-text);
+    }
+
+    .add-tab-btn {
+      padding: 4px 10px;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 1;
+      margin-left: 4px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="brand-group">
+      <div class="app-icon-badge" title="Notelist">
+        <!-- Checklist / Note Icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+        <span>NoteList</span>
+      </div>
+    </div>
+
+    <div class="controls">
+        
+        <select id="prefix-select">
+            <option value="number">#</option>
+            <option value="bullet">•</option>
+            <option value="asterisk">*</option>
+      </select>
+      <button id="add-box-btn" class="primary">+ Add Box</button>
+      <button id="theme-toggle-btn" class="icon-btn" title="Switch to Dark Mode" aria-label="Toggle Dark Mode">
+        <!-- Moon Icon (shown in Light Mode) -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+      
+    </div>
+  </div>
+
+  <div id="tab-bar" class="tab-bar"></div>
+  <div id="list-container"></div>
+
+  <div id="list-container"></div>
+
+  <!-- Click-to-Expand Image Viewer Modal -->
+  <div id="image-modal" class="modal-backdrop" title="Click outside to close">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <img id="modal-img" class="modal-img" src="" alt="Expanded screenshot">
+      <button id="modal-close-btn" class="modal-close-btn">Close (Esc)</button>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
